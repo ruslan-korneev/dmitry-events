@@ -2,9 +2,7 @@ from django.db import models
 
 
 class Ticket(models.Model):
-    event = models.ForeignKey(
-        "Event", on_delete=models.CASCADE, related_name="tickets"
-    )
+    event = models.ForeignKey("Event", on_delete=models.CASCADE, related_name="tickets")
     owner = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self) -> str:
@@ -19,7 +17,13 @@ class Event(models.Model):
     description = models.TextField()
     # TODO: we could add list of winners and list of prize
     prize = models.ForeignKey("Prize", on_delete=models.SET_NULL, null=True, blank=True)
-    winner = models.OneToOneField("Ticket", on_delete=models.SET_NULL, null=True, blank=True, related_name="event_winner")
+    winner = models.OneToOneField(
+        "Ticket",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="event_winner",
+    )
     start = models.DateTimeField()
     finish = models.DateTimeField()
     link_to_stream = models.URLField(null=True, blank=True)

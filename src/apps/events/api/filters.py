@@ -1,6 +1,6 @@
 from django_filters import BooleanFilter, FilterSet
 
-from apps.events.models import Event
+from src.apps.events.models import Event
 
 
 class EventFilterSet(FilterSet):

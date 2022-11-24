@@ -3,14 +3,11 @@
 # clone repo
 python -m venv .venv
 . .venv/bin/activate
+
 poetry install
+pre-commit install
 
-python src/manage.py migrate
-python src/manage.py createsuperuser
-python src/manage.py runserver
+events migrate
+events createsuperuser
+events runserver
 ```
-
-
-# Proposals
-- i would make ticket with some owner unique for one event
-- i would make a winner in event model -> ticket_id

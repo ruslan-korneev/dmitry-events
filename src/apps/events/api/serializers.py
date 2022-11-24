@@ -1,8 +1,8 @@
 from typing import OrderedDict
 from rest_framework import serializers
-from apps.events.api.exceptions import CanBuyTicketOnlyOnce
 
-from apps.events.models import Event, Prize, Ticket
+from src.apps.events.api.exceptions import CanBuyTicketOnlyOnce
+from src.apps.events.models import Event, Prize, Ticket
 
 
 class TicketSerializer(serializers.ModelSerializer):
@@ -32,7 +32,7 @@ class EventSerializer(serializers.ModelSerializer):
             "link_to_stream",
             "amount_of_available_tickets",
         )
-     
+
 
 class TicketBuySerializer(TicketSerializer):
     event = EventSerializer(read_only=True)

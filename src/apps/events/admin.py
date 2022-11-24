@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from apps.events.models import Event, Prize, Ticket
+from src.apps.events.models import Event, Prize, Ticket
 
 
 class HasWinnerFilter(admin.SimpleListFilter):

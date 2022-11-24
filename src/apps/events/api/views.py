@@ -6,12 +6,16 @@ from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework import status
 
-from apps.base.api.mixins import PermissionPerActionMixin, SerializerPerActionMixin
-from apps.events.api.filters import EventFilterSet
-from apps.events.api.paginators import EventPaginator
-from apps.events.api.permissions import IsWinner
-from apps.events.api.serializers import EventSerializer, PrizeSerializer, TicketBuySerializer
-from apps.events.models import Event, Ticket
+from src.apps.base.api.mixins import PermissionPerActionMixin, SerializerPerActionMixin
+from src.apps.events.api.filters import EventFilterSet
+from src.apps.events.api.paginators import EventPaginator
+from src.apps.events.api.permissions import IsWinner
+from src.apps.events.api.serializers import (
+    EventSerializer,
+    PrizeSerializer,
+    TicketBuySerializer,
+)
+from src.apps.events.models import Event, Ticket
 
 
 class EventViewSet(
@@ -19,7 +23,7 @@ class EventViewSet(
     PermissionPerActionMixin,
     ListModelMixin,
     RetrieveModelMixin,
-    GenericViewSet
+    GenericViewSet,
 ):
     action_serializers = {
         "default": EventSerializer,
@@ -42,11 +46,12 @@ class EventViewSet(
             ticket = event.available_ticket
         except Ticket.DoesNotExist:
             return Response(
-                {"detail": "No available tickets"},
-                status=status.HTTP_404_NOT_FOUND
+                {"detail": "No available tickets"}, status=status.HTTP_404_NOT_FOUND
             )
         serializer = self.get_serializer(
-            instance=ticket, data=request.data, context={"event": self.get_object(), "request": request}
+            instance=ticket,
+            data=request.data,
+            context={"event": self.get_object(), "request": request},
         )
         serializer.is_valid(raise_exception=True)
         serializer.save()
