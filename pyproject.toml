@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "dmitry-project"
+version = "0.1.0"
+description = ""
+authors = ["Ruslan Korneev <kornerus@fjfi.cvut.cz>"]
+readme = "README.md"
+packages = [{include = "dmitry_project"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+django = "^4.1.3"
+djangorestframework = "^3.14.0"
+
+
+[tool.poetry.group.dev.dependencies]
+django-stubs = "^1.13.0"
+djangorestframework-stubs = "^1.8.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
