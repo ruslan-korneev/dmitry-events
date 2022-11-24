@@ -7,6 +7,7 @@ from rest_framework.request import Request
 from rest_framework import status
 
 from apps.base.api.mixins import PermissionPerActionMixin, SerializerPerActionMixin
+from apps.events.api.filters import EventFilterSet
 from apps.events.api.paginators import EventPaginator
 from apps.events.api.permissions import IsWinner
 from apps.events.api.serializers import EventSerializer, PrizeSerializer, TicketBuySerializer
@@ -31,6 +32,7 @@ class EventViewSet(
     }
     pagination_class = EventPaginator
     queryset = Event.objects.all()
+    filterset_class = EventFilterSet
     # TODO: permission_classes
 
     @action(detail=True, methods=["POST"])
