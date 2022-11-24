@@ -27,7 +27,7 @@ class EventInline(admin.TabularInline):
 class EventAdmin(admin.ModelAdmin):
     list_display = ("__str__", "amount_of_available_tickets", "has_winner")
     list_filter = (HasWinnerFilter,)
-    search_fields = ("name", "winner")
+    search_fields = ("name", "winner__owner")
 
 
 @admin.register(Ticket)

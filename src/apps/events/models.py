@@ -16,7 +16,7 @@ class Event(models.Model):
     description = models.TextField()
     # TODO: we could add list of winners and list of prize
     prize = models.ForeignKey("Prize", on_delete=models.SET_NULL, null=True, blank=True)
-    winner = models.CharField(max_length=255, null=True, blank=True)
+    winner = models.OneToOneField("Ticket", on_delete=models.SET_NULL, null=True, blank=True, related_name="event_winner")
     start = models.DateTimeField()
     finish = models.DateTimeField()
     link_to_stream = models.URLField(null=True, blank=True)
@@ -29,7 +29,6 @@ class Event(models.Model):
                 name="correct_event_datetime",
             ),
         ]
-
 
     def __str__(self) -> str:
         return f"{self.name} | starts: {self.start} | finish {self.finish}"

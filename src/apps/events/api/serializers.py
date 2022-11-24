@@ -3,6 +3,12 @@ from rest_framework import serializers
 from apps.events.models import Event, Prize, Ticket
 
 
+class TicketSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ticket
+        fields = ("id", "event", "owner")
+
+
 class PrizeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Prize
@@ -11,6 +17,7 @@ class PrizeSerializer(serializers.ModelSerializer):
 
 class EventSerializer(serializers.ModelSerializer):
     prize = PrizeSerializer(read_only=True)
+    winner = TicketSerializer(read_only=True)
 
     class Meta:
         model = Event
@@ -25,14 +32,5 @@ class EventSerializer(serializers.ModelSerializer):
         )
      
 
-class CurrentEventDefault(serializers.CurrentUserDefault):
-    def __call__(self, serializer_field):
-        return serializer_field.context["event"]
-
-
-class TicketBuySerializer(serializers.ModelSerializer):
+class TicketBuySerializer(TicketSerializer):
     event = EventSerializer(read_only=True)
-
-    class Meta:
-        model = Ticket
-        fields = ("id", "event", "owner")
