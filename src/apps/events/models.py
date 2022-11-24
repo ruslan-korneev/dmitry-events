@@ -10,6 +10,9 @@ class Ticket(models.Model):
     def __str__(self) -> str:
         return f"{self.event} | {self.owner}"
 
+    class Meta:
+        unique_together = ("event", "owner")
+
 
 class Event(models.Model):
     name = models.CharField(max_length=120)
@@ -39,7 +42,9 @@ class Event(models.Model):
 
     @property
     def available_ticket(self) -> Ticket:
-        return self.tickets.filter(owner__isnull=True).first()
+        if not (queryset := self.tickets.filter(owner__isnull=True)):
+            raise Ticket.DoesNotExist
+        return queryset.first()
 
     @property
     def has_winner(self) -> bool:

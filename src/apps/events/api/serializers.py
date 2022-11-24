@@ -1,4 +1,6 @@
+from typing import OrderedDict
 from rest_framework import serializers
+from apps.events.api.exceptions import CanBuyTicketOnlyOnce
 
 from apps.events.models import Event, Prize, Ticket
 
@@ -34,3 +36,8 @@ class EventSerializer(serializers.ModelSerializer):
 
 class TicketBuySerializer(TicketSerializer):
     event = EventSerializer(read_only=True)
+
+    def validate(self, attrs: OrderedDict) -> OrderedDict:
+        if self.context.get("event").tickets.filter(owner=attrs.get("owner")).exists():
+            raise CanBuyTicketOnlyOnce
+        return super().validate(attrs)

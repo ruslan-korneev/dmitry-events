@@ -10,7 +10,7 @@ from apps.base.api.mixins import PermissionPerActionMixin, SerializerPerActionMi
 from apps.events.api.paginators import EventPaginator
 from apps.events.api.permissions import IsWinner
 from apps.events.api.serializers import EventSerializer, PrizeSerializer, TicketBuySerializer
-from apps.events.models import Event
+from apps.events.models import Event, Ticket
 
 
 class EventViewSet(
@@ -36,13 +36,15 @@ class EventViewSet(
     @action(detail=True, methods=["POST"])
     def buy_ticket(self, request: Request, *args, **kwargs):
         event = self.get_object()
-        if event.amount_of_available_tickets == 0:
+        try:
+            ticket = event.available_ticket
+        except Ticket.DoesNotExist:
             return Response(
                 {"detail": "No available tickets"},
                 status=status.HTTP_404_NOT_FOUND
             )
         serializer = self.get_serializer(
-            instance=event.available_ticket, data=request.data, context={"event": self.get_object(), "request": request}
+            instance=ticket, data=request.data, context={"event": self.get_object(), "request": request}
         )
         serializer.is_valid(raise_exception=True)
         serializer.save()
