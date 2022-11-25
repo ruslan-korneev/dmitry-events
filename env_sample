@@ -1,0 +1,19 @@
+# Database
+POSTGRES_DB=events-db
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=gnij20egn0fwmif
+POSTGRES_HOST=db
+POSTGRES_PORT=5412
+POSTGRES_PORT_DJ=5432
+
+# REDIS
+REDIS_PORT=6438
+
+# Django
+SECRET_KEY=jfiepsfjeip0w2jfei02f3jas0-fw-9f
+SERVER_PORT=8001
+
+# RepiDoc
+PAGE_TITLE="Events RapiDoc"
+SPEC_URL="schema.yml"
+RAPIDOC_PORT=8989

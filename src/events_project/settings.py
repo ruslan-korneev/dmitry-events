@@ -1,5 +1,11 @@
 from pathlib import Path
 
+import environ
+
+
+env = environ.Env()
+environ.Env.read_env(".env")
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -8,7 +14,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-w6-@re4d)&8z$6epo+xkc(!a_4%!ckomv^!m+d3le6qrz02)ly"
+SECRET_KEY = env(
+    "SECRET_KEY",
+    default="django-insecure-w6-@re4d)&8z$6epo+xkc(!a_4%!ckomv^!m+d3le6qrz02)ly",
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -66,12 +75,14 @@ WSGI_APPLICATION = "src.events_project.wsgi.application"
 
 
 # Database
-# https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": env("POSTGRES_DB", default="postgres"),
+        "USER": env("POSTGRES_USER", default="postgres"),
+        "PASSWORD": env("POSTGRES_PASSWORD", default="postgres"),
+        "HOST": env("POSTGRES_HOST", default="db"),
+        "PORT": env.int("POSTGRES_PORT_DJ", default=5432),
     }
 }
 
@@ -95,7 +106,17 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 REST_FRAMEWORK = {
-    "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"]
+    "DEFAULT_RENDERER_CLASSES": (
+        "djangorestframework_camel_case.render.CamelCaseJSONRenderer",
+        "djangorestframework_camel_case.render.CamelCaseBrowsableAPIRenderer",
+    ),
+    "DEFAULT_PARSER_CLASSES": (
+        "djangorestframework_camel_case.parser.CamelCaseJSONParser",
+    ),
+    "JSON_UNDERSCOREIZE": {
+        "no_underscore_before_number": True,
+    },
+    "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
 }
 
 # Internationalization
@@ -120,3 +141,20 @@ AMOUNT_OF_TICKETS_FOR_EVENT = 3
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Redis
+REDIS_HOST = env("REDIS_HOST", default="0.0.0.0")
+REDIS_PORT = env("REDIS_PORT", default=6379)
+REDIS_CACHE_LOCATION = env("REDIS_CACHE_LOCATION", default="1")
+
+# Cache
+CACHE_KEY_PREFIX = env("CACHE_KEY_PREFIX", default="fjewopfjfi3420fjwfkjs-32")
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_CACHE_LOCATION}",
+        "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
+        "KEY_PREFIX": CACHE_KEY_PREFIX,
+    }
+}
+CACHE_TTL = 60 * 15  # Cache time to live is 15 minutes
